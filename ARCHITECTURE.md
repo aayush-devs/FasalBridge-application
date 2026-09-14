@@ -43,24 +43,6 @@ FasalBridge-application/
 
 The current backend keeps application models, schemas, seed data, API endpoints, and decision-support logic in `backend/main.py`. The frontend is currently concentrated in `frontend/src/main.tsx` with global styles in `style.css`.
 
-## Data Model
-
-```mermaid
-erDiagram
-    USER ||--o{ LISTING : creates
-    USER ||--o{ ORDER : places
-    ORDER ||--o{ ALLOCATION : contains
-    LISTING ||--o{ ALLOCATION : fulfills
-    ORDER ||--o| ROUTE : generates
-
-    USER { int id PK; string name; string email; string password; string role; string location }
-    LISTING { int id PK; int farmer_id FK; string crop; float quantity; float available_quantity; float price; string location; string grade; date harvest_date }
-    ORDER { int id PK; int buyer_id FK; string crop; float quantity; string delivery_location; date required_date; string status; float total_price }
-    ALLOCATION { int id PK; int order_id FK; int listing_id FK; float quantity; float price }
-    DEMAND { int id PK; string crop; int week; float demand; string location }
-    ROUTE { int id PK; int order_id FK; string status; float distance; int stops; float load }
-```
-
 ## Buyer Order Flow
 
 ```mermaid
