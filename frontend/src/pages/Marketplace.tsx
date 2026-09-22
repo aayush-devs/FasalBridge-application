@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, MapPin, ArrowRight, ShoppingCart } from 'lucide-react';
+import { Search, MapPin, ArrowRight } from 'lucide-react';
 import { PageHead } from '../components/PageHead';
 import { apiGet, CROPS, formatRupee } from '../api/client';
 import { ProduceItem } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Marketplace: React.FC = () => {
+  const { t, translateCrop, translateLocation } = useLanguage();
   const [items, setItems] = useState<ProduceItem[]>([]);
   const [selectedCrop, setSelectedCrop] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -49,9 +51,9 @@ export const Marketplace: React.FC = () => {
   return (
     <div className="marketplace-page">
       <PageHead
-        tag="BUYER SOURCING MARKETPLACE"
-        title="Source closer. Know more."
-        text="Discover verified farm lots with zero middleman markups and transparent pooled delivery sequencing."
+        tag={t('market_page_tag')}
+        title={t('market_page_title')}
+        text={t('market_page_desc')}
       />
 
       <main className="marketplace-main">
@@ -61,7 +63,7 @@ export const Marketplace: React.FC = () => {
             <Search size={18} className="search-icon" />
             <input
               type="text"
-              placeholder="Search by crop, farmer name, or regional hub (e.g. Mohali, Patiala)..."
+              placeholder={t('market_search_placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -72,10 +74,10 @@ export const Marketplace: React.FC = () => {
             value={selectedCrop}
             onChange={(e) => setSelectedCrop(e.target.value)}
           >
-            <option value="">All Crops</option>
+            <option value="">{t('all_crops')}</option>
             {CROPS.map((c) => (
               <option key={c} value={c}>
-                {c}
+                {translateCrop(c)}
               </option>
             ))}
           </select>
@@ -83,11 +85,11 @@ export const Marketplace: React.FC = () => {
 
         {/* Produce Cards Grid */}
         {loading ? (
-          <div className="loading-placeholder">Loading live produce marketplace…</div>
+          <div className="loading-placeholder">{t('loading')}</div>
         ) : filteredItems.length === 0 ? (
           <div className="empty-placeholder">
-            <h3>No produce matching your filter</h3>
-            <p>Try selecting a different crop or clearing your search query.</p>
+            <h3>{t('market_no_results')}</h3>
+            <p>{t('market_no_results_sub')}</p>
           </div>
         ) : (
           <div className="produce-cards-grid">
@@ -103,26 +105,26 @@ export const Marketplace: React.FC = () => {
                 <div className="produce-card-body">
                   <div className="location-badge">
                     <MapPin size={13} />
-                    <span>{item.location}</span>
+                    <span>{translateLocation(item.location)}</span>
                   </div>
-                  <h3 className="produce-crop-title">{item.crop}</h3>
+                  <h3 className="produce-crop-title">{translateCrop(item.crop)}</h3>
                   <p className="produce-farmer-text">
-                    <b>{item.available_quantity.toLocaleString()} kg</b> available from {item.farmer}
+                    <b>{item.available_quantity.toLocaleString()} {t('unit_kg')}</b> {t('market_available_from')} {item.farmer}
                   </p>
-                  <span className="produce-harvest-date">Harvest date: {item.harvest_date}</span>
+                  <span className="produce-harvest-date">{t('harvest_date')}: {item.harvest_date}</span>
                 </div>
 
                 <div className="produce-card-footer">
                   <div className="produce-price-box">
                     <span className="price-main">{formatRupee(item.price)}</span>
-                    <span className="price-unit">/kg</span>
+                    <span className="price-unit">{t('unit_per_kg')}</span>
                   </div>
                   <Link
                     to={`/order?crop=${encodeURIComponent(item.crop)}`}
                     className="order-cta-btn"
-                    title={`Order ${item.crop}`}
+                    title={`${t('order_btn_short')} ${translateCrop(item.crop)}`}
                   >
-                    <span>Order</span>
+                    <span>{t('order_btn_short')}</span>
                     <ArrowRight size={16} />
                   </Link>
                 </div>

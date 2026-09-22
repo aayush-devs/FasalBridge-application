@@ -1,7 +1,10 @@
 import React from 'react';
 import { Leaf, ShieldCheck, Cpu } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Footer: React.FC = () => {
+  const { t } = useLanguage();
+
   return (
     <footer className="site-footer">
       <div className="footer-content">
@@ -10,22 +13,20 @@ export const Footer: React.FC = () => {
             <Leaf size={16} />
             <span>FasalBridge AI</span>
           </div>
-          <p>
-            Autonomous agricultural demand forecasting, multi-farmer aggregation, and pooled green logistics.
-          </p>
+          <p>{t('footer_desc')}</p>
         </div>
 
         <div className="footer-badges">
           <span className="badge-item">
-            <Cpu size={14} /> Linear Regression Trend Engine
+            <Cpu size={14} /> {t('footer_badge1')}
           </span>
           <span className="badge-item">
-            <ShieldCheck size={14} /> Verified Direct Farmer Supply
+            <ShieldCheck size={14} /> {t('footer_badge2')}
           </span>
         </div>
       </div>
       <div className="footer-bottom">
-        <span>© {new Date().getFullYear()} FasalBridge AI · Production-Ready Agri-Tech Architecture</span>
+        <span>© {new Date().getFullYear()} {t('footer_copyright')}</span>
       </div>
     </footer>
   );

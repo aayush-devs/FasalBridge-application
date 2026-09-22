@@ -22,8 +22,10 @@ import { RealMap, MapMarkerItem } from '../components/RealMap';
 import { FieldCard } from '../components/FieldCard';
 import { apiGet, CROPS } from '../api/client';
 import { AnalyticsData, ForecastData, ProduceItem } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 export const FarmerDashboard: React.FC = () => {
+  const { t, translateCrop, translateLocation } = useLanguage();
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [forecast, setForecast] = useState<ForecastData | null>(null);
   const [produceList, setProduceList] = useState<ProduceItem[]>([]);
@@ -86,20 +88,20 @@ export const FarmerDashboard: React.FC = () => {
   const chartData = forecast
     ? [
         ...forecast.history,
-        { week: 'Next Week (AI)', demand: forecast.predicted },
+        { week: t('dash_next_week'), demand: forecast.predicted },
       ]
     : [];
 
   return (
     <div className="dashboard-page">
       <PageHead
-        tag="FARMER & FPO INTELLIGENCE HUB"
-        title="Good morning, Harpreet."
-        text="Real-time harvest supply positioning, live GIS farm field telemetry, and predictive demand analytics."
+        tag={t('dash_tag')}
+        title={t('dash_title')}
+        text={t('dash_desc')}
         action={
           <Link className="btn btn-primary" to="/farmer/list-produce">
             <PlusCircle size={18} />
-            <span>List Fresh Produce</span>
+            <span>{t('dash_list_produce_btn')}</span>
           </Link>
         }
       />
@@ -111,32 +113,32 @@ export const FarmerDashboard: React.FC = () => {
             <div className="metric-icon-box">
               <Package size={20} />
             </div>
-            <span className="metric-label">ACTIVE FIELD LOTS</span>
+            <span className="metric-label">{t('dash_kpi_listings')}</span>
             <strong className="metric-value">
               {analytics?.listings || produceList.length || 16}
             </strong>
-            <span className="metric-sub">Verified GPS geo-tagged</span>
+            <span className="metric-sub">{t('dash_kpi_listings_sub')}</span>
           </article>
 
           <article className="metric-card">
             <div className="metric-icon-box">
               <ShoppingBasket size={20} />
             </div>
-            <span className="metric-label">COMMITTED ORDERS</span>
+            <span className="metric-label">{t('dash_kpi_orders')}</span>
             <strong className="metric-value">{analytics?.orders || 8}</strong>
-            <span className="metric-sub">Pooled pickup routes</span>
+            <span className="metric-sub">{t('dash_kpi_orders_sub')}</span>
           </article>
 
           <article className="metric-card">
             <div className="metric-icon-box">
               <TrendingUp size={20} />
             </div>
-            <span className="metric-label">PROJECTED DEMAND</span>
+            <span className="metric-label">{t('dash_kpi_demand')}</span>
             <strong className="metric-value">
-              {forecast ? `${forecast.predicted.toLocaleString()} kg` : '3,800 kg'}
+              {forecast ? `${forecast.predicted.toLocaleString()} ${t('unit_kg')}` : `3,800 ${t('unit_kg')}`}
             </strong>
             <span className="metric-sub green-sub">
-              ↑ {forecast?.change || 35}% expected growth
+              ↑ {forecast?.change || 35}% {t('dash_kpi_demand_growth')}
             </span>
           </article>
 
@@ -144,11 +146,11 @@ export const FarmerDashboard: React.FC = () => {
             <div className="metric-icon-box">
               <Leaf size={20} />
             </div>
-            <span className="metric-label">RECOMMENDED HARVEST</span>
+            <span className="metric-label">{t('dash_kpi_harvest')}</span>
             <strong className="metric-value">
-              {forecast ? `${forecast.recommended.toLocaleString()} kg` : '4,100 kg'}
+              {forecast ? `${forecast.recommended.toLocaleString()} ${t('unit_kg')}` : `4,100 ${t('unit_kg')}`}
             </strong>
-            <span className="metric-sub">Buffered for zero spoilage</span>
+            <span className="metric-sub">{t('dash_kpi_harvest_sub')}</span>
           </article>
         </section>
 
@@ -157,18 +159,20 @@ export const FarmerDashboard: React.FC = () => {
           <div className="panel forecast-panel">
             <div className="panel-header">
               <div>
-                <span className="panel-tag">AI DEMAND PREDICTION · {forecast?.crop.toUpperCase() || 'TOMATO'}</span>
+                <span className="panel-tag">
+                  {t('dash_forecast_tag')} · {forecast?.crop ? translateCrop(forecast.crop).toUpperCase() : translateCrop('Tomato').toUpperCase()}
+                </span>
                 <h2 className="panel-title">
-                  {forecast ? `${forecast.predicted.toLocaleString()} kg` : 'Loading…'}
+                  {forecast ? `${forecast.predicted.toLocaleString()} ${t('unit_kg')}` : t('loading')}
                 </h2>
                 <p className="panel-sub">
-                  Extrapolated weekly demand using scikit-learn linear trend modeling.
+                  {t('dash_forecast_sub')}
                 </p>
               </div>
 
               <div className="confidence-meter">
                 <span className="confidence-score">{forecast?.confidence || 78}%</span>
-                <span className="confidence-label">Confidence</span>
+                <span className="confidence-label">{t('dash_confidence')}</span>
               </div>
             </div>
 
@@ -183,7 +187,7 @@ export const FarmerDashboard: React.FC = () => {
                   </defs>
                   <XAxis dataKey="week" stroke="#728c7c" tick={{ fontSize: 12 }} />
                   <Tooltip
-                    formatter={(val: any) => [`${Number(val).toLocaleString()} kg`, 'Demand']}
+                    formatter={(val: any) => [`${Number(val).toLocaleString()} ${t('unit_kg')}`, t('dash_chart_demand')]}
                     contentStyle={{ background: '#fff', borderRadius: 8, border: '1px solid #e3e8df' }}
                   />
                   <Area
@@ -198,24 +202,24 @@ export const FarmerDashboard: React.FC = () => {
               </ResponsiveContainer>
             </div>
             <p className="disclaimer-text">
-              {forecast?.disclaimer || 'AI decision support — not a guarantee of sale or price.'}
+              {t('dash_disclaimer')}
             </p>
           </div>
 
           <div className="panel signal-panel">
-            <span className="panel-tag">REGIONAL OPPORTUNITY</span>
-            <h2 className="signal-title">Punjab & Delhi Corridor</h2>
+            <span className="panel-tag">{t('dash_opp_tag')}</span>
+            <h2 className="signal-title">{t('dash_opp_title')}</h2>
             <div className="signal-highlight">
               <span className="signal-percentage">+{forecast?.change || 35}%</span>
               <p className="signal-note">
-                Elevated demand from bulk institutional buyers in Chandigarh & Delhi.
+                {t('dash_opp_note')}
               </p>
             </div>
             <div className="signal-tips">
-              <p>💡 Tip: Grade A lots with scheduled harvest dates within 4-7 days receive 15% faster matching.</p>
+              <p>{t('dash_opp_tip')}</p>
             </div>
             <Link className="action-text-link" to="/farmer/list-produce">
-              <span>List your produce lot</span>
+              <span>{t('dash_opp_link')}</span>
               <ArrowRight size={16} />
             </Link>
           </div>
@@ -228,7 +232,10 @@ export const FarmerDashboard: React.FC = () => {
               <div className="focused-farm-text">
                 <MapPin size={15} />
                 <span>
-                  Targeting Farm: <strong>{produceList.find((p) => p.id === selectedFieldId)?.farmer}</strong> ({produceList.find((p) => p.id === selectedFieldId)?.crop} · {produceList.find((p) => p.id === selectedFieldId)?.location})
+                  {t('dash_focus_banner_title')}{' '}
+                  <strong>{produceList.find((p) => p.id === selectedFieldId)?.farmer}</strong> (
+                  {translateCrop(produceList.find((p) => p.id === selectedFieldId)?.crop || '')} ·{' '}
+                  {translateLocation(produceList.find((p) => p.id === selectedFieldId)?.location || '')})
                 </span>
               </div>
               <button
@@ -236,7 +243,7 @@ export const FarmerDashboard: React.FC = () => {
                 className="reset-focus-btn"
                 onClick={() => setSelectedFieldId(null)}
               >
-                Reset Map View
+                {t('dash_reset_focus')}
               </button>
             </div>
           )}
@@ -244,12 +251,11 @@ export const FarmerDashboard: React.FC = () => {
             <div>
               <div className="section-badge">
                 <MapPin size={14} />
-                <span>GIS SUPPLY TELEMETRY</span>
+                <span>{t('dash_gis_badge')}</span>
               </div>
-              <h2 className="section-title">Live Regional Farm Map</h2>
+              <h2 className="section-title">{t('dash_gis_title')}</h2>
               <p className="section-subtitle">
-                Explore authentic geolocated farm lots across Mohali, Patiala, Ludhiana, Chandigarh, and Delhi.
-                Click any farm marker or use the "Locate" button on field cards below to inspect lots.
+                {t('dash_gis_subtitle')}
               </p>
             </div>
 
@@ -259,7 +265,7 @@ export const FarmerDashboard: React.FC = () => {
                 className={`filter-chip ${selectedCrop === 'All' ? 'filter-chip-active' : ''}`}
                 onClick={() => setSelectedCrop('All')}
               >
-                All Crops ({produceList.length})
+                {t('all_crops')} ({produceList.length})
               </button>
               {CROPS.map((crop) => {
                 const count = produceList.filter((p) => p.crop === crop).length;
@@ -270,7 +276,7 @@ export const FarmerDashboard: React.FC = () => {
                     className={`filter-chip ${selectedCrop === crop ? 'filter-chip-active' : ''}`}
                     onClick={() => setSelectedCrop(crop)}
                   >
-                    {crop} ({count})
+                    {translateCrop(crop)} ({count})
                   </button>
                 );
               })}
@@ -294,22 +300,23 @@ export const FarmerDashboard: React.FC = () => {
             <div>
               <div className="section-badge">
                 <Layers size={14} />
-                <span>ACTIVE HARVEST INVENTORY</span>
+                <span>{t('dash_inventory_badge')}</span>
               </div>
               <h2 className="section-title">
-                {selectedCrop === 'All' ? 'All Field Lots' : `${selectedCrop} Fields`} ({filteredListings.length})
+                {selectedCrop === 'All' ? t('all_crops') : translateCrop(selectedCrop)}{' '}
+                {t('dash_inventory_title')} ({filteredListings.length})
               </h2>
               <p className="section-subtitle">
-                Field cards showing verified farmer profiles, available supply, quality grading, and GPS telemetry.
+                {t('dash_inventory_subtitle')}
               </p>
             </div>
           </div>
 
           {loading ? (
-            <div className="loading-placeholder">Loading real field telemetry…</div>
+            <div className="loading-placeholder">{t('dash_loading_telemetry')}</div>
           ) : filteredListings.length === 0 ? (
             <div className="empty-placeholder">
-              <p>No active fields found for {selectedCrop}.</p>
+              <p>{t('dash_no_fields')} {selectedCrop === 'All' ? t('all_crops') : translateCrop(selectedCrop)}.</p>
             </div>
           ) : (
             <div className="field-cards-grid">

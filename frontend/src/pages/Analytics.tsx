@@ -4,7 +4,6 @@ import {
   ShoppingBasket,
   Leaf,
   Truck,
-  TrendingUp,
   BarChart3,
   LineChart as LineChartIcon,
 } from 'lucide-react';
@@ -21,8 +20,10 @@ import {
 import { PageHead } from '../components/PageHead';
 import { apiGet } from '../api/client';
 import { AnalyticsData } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Analytics: React.FC = () => {
+  const { t, translateCrop } = useLanguage();
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -36,14 +37,14 @@ export const Analytics: React.FC = () => {
   return (
     <div className="analytics-page">
       <PageHead
-        tag="SYSTEM-WIDE PLATFORM TELEMETRY"
-        title="The agricultural bridge, in numbers."
-        text="Transparent metrics illustrating supply resilience, farmer disintermediation, and logistics efficiency."
+        tag={t('ana_page_tag')}
+        title={t('ana_page_title')}
+        text={t('ana_page_desc')}
       />
 
       <main className="analytics-main">
         {loading ? (
-          <div className="loading-placeholder">Loading real platform analytics…</div>
+          <div className="loading-placeholder">{t('loading')}</div>
         ) : (
           <>
             {/* KPI Cards */}
@@ -52,36 +53,36 @@ export const Analytics: React.FC = () => {
                 <div className="metric-icon-box">
                   <Leaf size={20} />
                 </div>
-                <span className="metric-label">ONBOARDED FARMERS</span>
+                <span className="metric-label">{t('ana_kpi_farmers')}</span>
                 <strong className="metric-value">{data?.farmers || 10}</strong>
-                <span className="metric-sub">Direct smallholders & FPOs</span>
+                <span className="metric-sub">{t('ana_kpi_farmers_sub')}</span>
               </article>
 
               <article className="metric-card">
                 <div className="metric-icon-box">
                   <ShoppingBasket size={20} />
                 </div>
-                <span className="metric-label">REGISTERED BUYERS</span>
+                <span className="metric-label">{t('ana_kpi_buyers')}</span>
                 <strong className="metric-value">{data?.buyers || 5}</strong>
-                <span className="metric-sub">Wholesale & retail chains</span>
+                <span className="metric-sub">{t('ana_kpi_buyers_sub')}</span>
               </article>
 
               <article className="metric-card">
                 <div className="metric-icon-box">
                   <Package size={20} />
                 </div>
-                <span className="metric-label">PRODUCE TRADED</span>
-                <strong className="metric-value">{data?.traded?.toLocaleString() || '12,800'} kg</strong>
-                <span className="metric-sub green-sub">100% direct transactions</span>
+                <span className="metric-label">{t('ana_kpi_traded')}</span>
+                <strong className="metric-value">{data?.traded?.toLocaleString() || '12,800'} {t('unit_kg')}</strong>
+                <span className="metric-sub green-sub">{t('ana_kpi_traded_sub')}</span>
               </article>
 
               <article className="metric-card">
                 <div className="metric-icon-box">
                   <Truck size={20} />
                 </div>
-                <span className="metric-label">AVG DELIVERY DISTANCE</span>
+                <span className="metric-label">{t('ana_kpi_distance')}</span>
                 <strong className="metric-value">{data?.average_distance || 42} km</strong>
-                <span className="metric-sub">Localized supply radius</span>
+                <span className="metric-sub">{t('ana_kpi_distance_sub')}</span>
               </article>
             </section>
 
@@ -91,9 +92,9 @@ export const Analytics: React.FC = () => {
                 <div className="panel-header-simple">
                   <div className="panel-title-with-icon">
                     <LineChartIcon size={20} />
-                    <h3>Weekly Orders Velocity</h3>
+                    <h3>{t('ana_chart_velocity_title')}</h3>
                   </div>
-                  <span className="panel-tag">TREND ANALYSIS</span>
+                  <span className="panel-tag">{t('ana_chart_velocity_tag')}</span>
                 </div>
                 <div className="chart-box">
                   <ResponsiveContainer width="100%" height={260}>
@@ -101,6 +102,7 @@ export const Analytics: React.FC = () => {
                       <XAxis dataKey="week" stroke="#728c7c" tick={{ fontSize: 12 }} />
                       <YAxis stroke="#728c7c" width={35} allowDecimals={false} tick={{ fontSize: 12 }} />
                       <Tooltip
+                        formatter={(val: any) => [`${Number(val).toLocaleString()}`, t('ana_chart_orders')]}
                         contentStyle={{ background: '#fff', borderRadius: 8, border: '1px solid #e3e8df' }}
                       />
                       <Line
@@ -120,14 +122,19 @@ export const Analytics: React.FC = () => {
                 <div className="panel-header-simple">
                   <div className="panel-title-with-icon">
                     <BarChart3 size={20} />
-                    <h3>Demand Distribution by Crop</h3>
+                    <h3>{t('ana_chart_demand_title')}</h3>
                   </div>
-                  <span className="panel-tag">HISTORICAL VOLUME</span>
+                  <span className="panel-tag">{t('ana_chart_demand_tag')}</span>
                 </div>
                 <div className="chart-box">
                   <ResponsiveContainer width="100%" height={260}>
                     <BarChart data={data?.demand} margin={{ top: 10, right: 15, left: 10, bottom: 5 }}>
-                      <XAxis dataKey="crop" stroke="#728c7c" tick={{ fontSize: 12 }} />
+                      <XAxis
+                        dataKey="crop"
+                        stroke="#728c7c"
+                        tick={{ fontSize: 12 }}
+                        tickFormatter={(crop: string) => translateCrop(crop)}
+                      />
                       <YAxis
                         stroke="#728c7c"
                         width={45}
@@ -137,7 +144,7 @@ export const Analytics: React.FC = () => {
                         }
                       />
                       <Tooltip
-                        formatter={(val: any) => [`${Number(val).toLocaleString()} kg`, 'Demand']}
+                        formatter={(val: any) => [`${Number(val).toLocaleString()} ${t('unit_kg')}`, t('ana_chart_demand')]}
                         contentStyle={{ background: '#fff', borderRadius: 8, border: '1px solid #e3e8df' }}
                       />
                       <Bar dataKey="demand" fill="#29704d" radius={[6, 6, 0, 0]} />

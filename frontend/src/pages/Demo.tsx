@@ -1,46 +1,47 @@
 import React, { useState } from 'react';
 import { ArrowRight, CircleCheck, Sparkles, RefreshCw } from 'lucide-react';
-import { PageHead } from '../components/PageHead';
 import { apiPost } from '../api/client';
 import { OrderData } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Demo: React.FC = () => {
+  const { t } = useLanguage();
   const [step, setStep] = useState<number>(0);
   const [order, setOrder] = useState<OrderData | null>(null);
   const [running, setRunning] = useState<boolean>(false);
 
   const demoSteps = [
     {
-      title: 'Buyer submits procurement requirement',
-      detail: 'Wholesale buyer in Chandigarh requests 3,500 kg fresh Grade A Tomatoes.',
+      title: t('demo_step1_title'),
+      detail: t('demo_step1_desc'),
     },
     {
-      title: 'AI executes multi-farmer supply discovery',
-      detail: 'FasalBridge AI scans available verified farm lots in Mohali & Patiala.',
+      title: t('demo_step2_title'),
+      detail: t('demo_step2_desc'),
     },
     {
-      title: 'Demand is pooled across nearby farms',
-      detail: 'Supply dynamically matched: Harpreet (1,500 kg), Gurpreet (1,200 kg), Ravi (800 kg).',
+      title: t('demo_step3_title'),
+      detail: t('demo_step3_desc'),
     },
     {
-      title: 'Automated pooled pickup route is generated',
-      detail: 'Route #FB1025 created with 3 farm pickup stops and 1 delivery hub destination.',
+      title: t('demo_step4_title'),
+      detail: t('demo_step4_desc'),
     },
     {
-      title: 'Nearest-neighbor route sequencing applied',
-      detail: 'Stops ordered geographically to minimize empty-truck return mileage by 28%.',
+      title: t('demo_step5_title'),
+      detail: t('demo_step5_desc'),
     },
     {
-      title: 'Produce batch picked up and marked in transit',
-      detail: 'Batch verified for quality grade upon aggregation into refrigerated truck.',
+      title: t('demo_step6_title'),
+      detail: t('demo_step6_desc'),
     },
     {
-      title: 'Final delivery confirmed at Chandigarh Hub',
-      detail: 'Order marked DELIVERED; payment cleared directly to farmer accounts at 0% fee.',
+      title: t('demo_step7_title'),
+      detail: t('demo_step7_desc'),
     },
     {
-      title: 'Feedback loop: Demand history updated',
-      detail: 'Delivered volume logged into historical dataset; Linear regression forecast updated.',
+      title: t('demo_step8_title'),
+      detail: t('demo_step8_desc'),
     },
   ];
 
@@ -85,11 +86,10 @@ export const Demo: React.FC = () => {
     <div className="demo-page">
       <section className="demo-hero-section">
         <div className="demo-container">
-          <div className="eyebrow-tag">✦ LIVE HACKATHON DEMONSTRATION</div>
-          <h1 className="demo-hero-title">From demand signal to delivered harvest.</h1>
+          <div className="eyebrow-tag">{t('demo_eyebrow')}</div>
+          <h1 className="demo-hero-title">{t('demo_title')}</h1>
           <p className="demo-hero-sub">
-            Witness how FasalBridge AI coordinates discovery, multi-farmer aggregation, green logistics,
-            and predictive feedback in real time.
+            {t('demo_desc')}
           </p>
 
           <div className="demo-card panel">
@@ -137,7 +137,7 @@ export const Demo: React.FC = () => {
                 >
                   <Sparkles size={18} />
                   <span>
-                    {step === 0 ? 'Initialize Live Demo' : running ? 'Processing Step…' : 'Continue Next Step'}
+                    {step === 0 ? t('demo_btn_init') : running ? t('demo_btn_processing') : t('demo_btn_next')}
                   </span>
                   <ArrowRight size={16} />
                 </button>
@@ -145,7 +145,7 @@ export const Demo: React.FC = () => {
                 <div className="demo-completed-box">
                   <div className="completion-banner">
                     <CircleCheck size={26} />
-                    <span>FasalBridge AI Loop Complete — Autonomous Logistics & Forecast Refreshed!</span>
+                    <span>{t('demo_completion_msg')}</span>
                   </div>
                   <button
                     type="button"
@@ -153,7 +153,7 @@ export const Demo: React.FC = () => {
                     onClick={handleReset}
                   >
                     <RefreshCw size={16} />
-                    <span>Re-run Demonstration</span>
+                    <span>{t('demo_btn_reset')}</span>
                   </button>
                 </div>
               )}
