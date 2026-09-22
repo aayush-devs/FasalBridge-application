@@ -97,9 +97,9 @@ export const Analytics: React.FC = () => {
                 </div>
                 <div className="chart-box">
                   <ResponsiveContainer width="100%" height={260}>
-                    <LineChart data={data?.orders_over_time} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <XAxis dataKey="week" stroke="#728c7c" />
-                      <YAxis stroke="#728c7c" />
+                    <LineChart data={data?.orders_over_time} margin={{ top: 10, right: 15, left: 5, bottom: 5 }}>
+                      <XAxis dataKey="week" stroke="#728c7c" tick={{ fontSize: 12 }} />
+                      <YAxis stroke="#728c7c" width={35} allowDecimals={false} tick={{ fontSize: 12 }} />
                       <Tooltip
                         contentStyle={{ background: '#fff', borderRadius: 8, border: '1px solid #e3e8df' }}
                       />
@@ -126,9 +126,16 @@ export const Analytics: React.FC = () => {
                 </div>
                 <div className="chart-box">
                   <ResponsiveContainer width="100%" height={260}>
-                    <BarChart data={data?.demand} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <XAxis dataKey="crop" stroke="#728c7c" />
-                      <YAxis stroke="#728c7c" />
+                    <BarChart data={data?.demand} margin={{ top: 10, right: 15, left: 10, bottom: 5 }}>
+                      <XAxis dataKey="crop" stroke="#728c7c" tick={{ fontSize: 12 }} />
+                      <YAxis
+                        stroke="#728c7c"
+                        width={45}
+                        tick={{ fontSize: 12 }}
+                        tickFormatter={(val: number) =>
+                          val >= 1000 ? `${(val / 1000).toFixed(val % 1000 === 0 ? 0 : 1)}k` : `${val}`
+                        }
+                      />
                       <Tooltip
                         formatter={(val: any) => [`${Number(val).toLocaleString()} kg`, 'Demand']}
                         contentStyle={{ background: '#fff', borderRadius: 8, border: '1px solid #e3e8df' }}
