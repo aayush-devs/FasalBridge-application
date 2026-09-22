@@ -68,7 +68,19 @@ export const FarmerDashboard: React.FC = () => {
 
   // Handle locating a field on the map
   const handleLocateField = (item: ProduceItem) => {
+    // If the crop is currently filtered out, reset filter to 'All' so marker is visible on map
+    if (selectedCrop !== 'All' && selectedCrop.toLowerCase() !== item.crop.toLowerCase()) {
+      setSelectedCrop('All');
+    }
     setSelectedFieldId(item.id);
+
+    // Smoothly scroll to the map so the user immediately sees the focused farm and opened popup
+    setTimeout(() => {
+      const mapSection = document.getElementById('regional-farm-map-section');
+      if (mapSection) {
+        mapSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 50);
   };
 
   const chartData = forecast
@@ -210,7 +222,24 @@ export const FarmerDashboard: React.FC = () => {
         </section>
 
         {/* Real Interactive Map Section */}
-        <section className="real-map-section">
+        <section className="real-map-section" id="regional-farm-map-section">
+          {selectedFieldId && (
+            <div className="focused-farm-pill">
+              <div className="focused-farm-text">
+                <MapPin size={15} />
+                <span>
+                  Targeting Farm: <strong>{produceList.find((p) => p.id === selectedFieldId)?.farmer}</strong> ({produceList.find((p) => p.id === selectedFieldId)?.crop} · {produceList.find((p) => p.id === selectedFieldId)?.location})
+                </span>
+              </div>
+              <button
+                type="button"
+                className="reset-focus-btn"
+                onClick={() => setSelectedFieldId(null)}
+              >
+                Reset Map View
+              </button>
+            </div>
+          )}
           <div className="section-head-bar">
             <div>
               <div className="section-badge">

@@ -34,6 +34,7 @@ export const RealMap: React.FC<RealMapProps> = ({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const layerGroupRef = useRef<L.LayerGroup | null>(null);
+  const markersMapRef = useRef<Map<string | number, L.Marker>>(new Map());
 
   // Initialize Map
   useEffect(() => {
@@ -62,22 +63,24 @@ export const RealMap: React.FC<RealMapProps> = ({
       map.remove();
       mapInstanceRef.current = null;
       layerGroupRef.current = null;
+      markersMapRef.current.clear();
     };
   }, []);
 
-  // Update Markers, Route Polyline & Bounds
+  // Update Markers, Route Polyline & Bounds / Focus
   useEffect(() => {
     const map = mapInstanceRef.current;
     const layerGroup = layerGroupRef.current;
     if (!map || !layerGroup) return;
 
     layerGroup.clearLayers();
+    markersMapRef.current.clear();
 
     const latLngs: L.LatLngExpression[] = [];
 
     // Add Farm Markers
     markers.forEach((m, idx) => {
-      const isSelected = selectedId === m.id;
+      const isSelected = String(selectedId) === String(m.id);
       const farmIcon = L.divIcon({
         className: 'custom-map-icon',
         html: `
@@ -93,6 +96,7 @@ export const RealMap: React.FC<RealMapProps> = ({
 
       const marker = L.marker([m.lat, m.lng], { icon: farmIcon });
       latLngs.push([m.lat, m.lng]);
+      markersMapRef.current.set(m.id, marker);
 
       const popupContent = `
         <div class="map-popup-card">
@@ -158,8 +162,20 @@ export const RealMap: React.FC<RealMapProps> = ({
       }
     }
 
-    // Fit map bounds to encompass all points
-    if (latLngs.length > 0) {
+    // Handle Active Focus or Fit All Bounds
+    if (selectedId) {
+      const selectedMarker =
+        markersMapRef.current.get(selectedId) ||
+        Array.from(markersMapRef.current.entries()).find(([k]) => String(k) === String(selectedId))?.[1];
+
+      if (selectedMarker) {
+        const pos = selectedMarker.getLatLng();
+        map.flyTo(pos, 13, { duration: 1.0 });
+        setTimeout(() => {
+          selectedMarker.openPopup();
+        }, 300);
+      }
+    } else if (latLngs.length > 0) {
       const bounds = L.latLngBounds(latLngs);
       map.fitBounds(bounds, {
         padding: [45, 45],

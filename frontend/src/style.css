@@ -979,6 +979,25 @@ a {
   margin-left: 2px;
 }
 
+@keyframes pin-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(237, 157, 53, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(237, 157, 53, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(237, 157, 53, 0);
+  }
+}
+
+.selected-pin .pin-badge {
+  border-color: #ffd166 !important;
+  animation: pin-pulse 1.8s infinite;
+  transform: scale(1.25);
+  background: #ed9d35 !important;
+}
+
 .locate-btn {
   display: inline-flex;
   align-items: center;
@@ -998,6 +1017,50 @@ a {
   background: var(--green-forest);
   color: #fff;
   border-color: var(--green-forest);
+}
+
+.locate-btn-active {
+  background: var(--green-forest) !important;
+  color: #fff !important;
+  border-color: var(--green-forest) !important;
+  box-shadow: 0 0 0 3px rgba(41, 112, 77, 0.3);
+}
+
+.focused-farm-pill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #eaf5eb;
+  border: 1px solid #bfe3c4;
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.focused-farm-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green-forest);
+  font-size: 13px;
+}
+
+.reset-focus-btn {
+  background: #fff;
+  border: 1px solid #bfe3c4;
+  color: var(--green-forest);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-focus-btn:hover {
+  background: var(--green-forest);
+  color: #fff;
 }
 
 .field-geo-coords {

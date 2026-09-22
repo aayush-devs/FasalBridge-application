@@ -84,15 +84,16 @@ export const FieldCard: React.FC<FieldCardProps> = ({
         {onLocate && (
           <button
             type="button"
-            className="locate-btn"
+            className={`locate-btn ${isSelected ? 'locate-btn-active' : ''}`}
             onClick={(e) => {
+              e.preventDefault();
               e.stopPropagation();
               onLocate(item);
             }}
             title="Focus this farm on map"
           >
             <Navigation size={14} />
-            <span>Locate</span>
+            <span>{isSelected ? 'Focused on Map' : 'Locate'}</span>
           </button>
         )}
       </div>
