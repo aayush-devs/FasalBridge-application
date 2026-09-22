@@ -2,6 +2,7 @@ import React from 'react';
 import { MapPin, Calendar, CheckCircle2, Navigation } from 'lucide-react';
 import { ProduceItem } from '../types';
 import { formatRupee } from '../api/client';
+import { useLanguage } from '../context/LanguageContext';
 
 interface FieldCardProps {
   item: ProduceItem;
@@ -16,6 +17,8 @@ export const FieldCard: React.FC<FieldCardProps> = ({
   onSelect,
   onLocate,
 }) => {
+  const { t, translateCrop, translateLocation } = useLanguage();
+
   const getCropEmoji = (crop: string) => {
     switch (crop.toLowerCase()) {
       case 'tomato':
@@ -42,7 +45,7 @@ export const FieldCard: React.FC<FieldCardProps> = ({
         <div className="field-crop-icon">{getCropEmoji(item.crop)}</div>
         <div className="field-title-group">
           <span className="field-farmer-name">{item.farmer}</span>
-          <h3 className="field-crop-name">{item.crop}</h3>
+          <h3 className="field-crop-name">{translateCrop(item.crop)}</h3>
         </div>
         <span className={`grade-chip ${item.grade === 'Grade A' ? 'grade-a' : 'grade-b'}`}>
           {item.grade}
@@ -52,17 +55,17 @@ export const FieldCard: React.FC<FieldCardProps> = ({
       <div className="field-meta-grid">
         <div className="meta-item">
           <MapPin size={14} className="meta-icon" />
-          <span>{item.location}</span>
+          <span>{translateLocation(item.location)}</span>
         </div>
         <div className="meta-item">
           <Calendar size={14} className="meta-icon" />
-          <span>Harvest: {item.harvest_date}</span>
+          <span>{t('harvest_date')}: {item.harvest_date}</span>
         </div>
       </div>
 
       <div className="field-quantity-box">
         <div className="qty-row">
-          <span className="qty-label">Available Supply:</span>
+          <span className="qty-label">{t('available_supply')}:</span>
           <strong className="qty-val">{item.available_quantity.toLocaleString()} kg</strong>
         </div>
         <div className="qty-bar-bg">
@@ -93,7 +96,7 @@ export const FieldCard: React.FC<FieldCardProps> = ({
             title="Focus this farm on map"
           >
             <Navigation size={14} />
-            <span>{isSelected ? 'Focused on Map' : 'Locate'}</span>
+            <span>{isSelected ? t('focused_btn') : t('locate_btn')}</span>
           </button>
         )}
       </div>
@@ -101,7 +104,7 @@ export const FieldCard: React.FC<FieldCardProps> = ({
       <div className="field-geo-coords">
         <span>GPS: {item.lat.toFixed(4)}°N, {item.lng.toFixed(4)}°E</span>
         <span className="verified-badge">
-          <CheckCircle2 size={12} /> Verified Farm
+          <CheckCircle2 size={12} /> {t('verified_farm')}
         </span>
       </div>
     </article>
