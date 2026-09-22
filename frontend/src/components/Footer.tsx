@@ -21,7 +21,7 @@ export const Footer: React.FC = () => {
           </span>
           <span className="badge-item">
             <ShieldCheck size={14} /> Verified Direct Farmer Supply
-          </span>66
+          </span>
         </div>
       </div>
       <div className="footer-bottom">
