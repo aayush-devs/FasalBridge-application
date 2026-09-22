@@ -916,3 +916,13 @@ def get_analytics(db: Session = Depends(get_db)):
             {"week": "W4", "orders": 16},
         ],
     }
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    port = int(os.getenv("PORT", "8000"))
+    host = os.getenv("HOST", "127.0.0.1")
+    logger.info(f"Starting FasalBridge AI server at http://{host}:{port}")
+    uvicorn.run("main:app", host=host, port=port, reload=True, app_dir=str(BASE_DIR))
+
