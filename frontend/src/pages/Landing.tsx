@@ -18,45 +18,47 @@ import {
   Users,
   Zap,
 } from 'lucide-react';
-
-const journeySteps = [
-  {
-    number: '01',
-    kicker: 'See what is coming',
-    title: 'Demand becomes a signal, not a surprise.',
-    description:
-      'FasalBridge reads buying patterns and turns them into clear, local crop demand—before the harvest leaves the field.',
-    icon: BarChart3,
-    metric: '+18.4%',
-    metricLabel: 'tomato demand next week',
-    bars: [42, 55, 50, 66, 61, 78, 91],
-  },
-  {
-    number: '02',
-    kicker: 'Connect every acre',
-    title: 'Small harvests become market-ready supply.',
-    description:
-      'Nearby farmers and FPOs are matched by crop, grade, timing, and location—building one reliable lot for the right buyer.',
-    icon: Users,
-    metric: '4 farms',
-    metricLabel: 'pooled into one buyer order',
-    farms: ['FB', 'KL', 'AS', 'RM'],
-  },
-  {
-    number: '03',
-    kicker: 'Move as one',
-    title: 'One smart route replaces many costly trips.',
-    description:
-      'A pooled pickup plan reduces empty kilometres, protects freshness, and gives every participant a shared live view.',
-    icon: Route,
-    metric: '32% less',
-    metricLabel: 'estimated transport cost',
-    routeStops: ['Ludhiana', 'Khanna', 'Mandi Gobindgarh', 'Delhi NCR'],
-  },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 export const Landing: React.FC = () => {
   const heroRef = useRef<HTMLElement>(null);
+  const { t } = useLanguage();
+
+  const journeySteps = [
+    {
+      number: '01',
+      kicker: t('landing_step1_kicker'),
+      title: t('landing_step1_title'),
+      description: t('landing_step1_desc'),
+      icon: BarChart3,
+      metric: '+18.4%',
+      metricLabel: t('landing_step1_label'),
+      chartTitle: t('landing_step1_chart_title'),
+      bars: [42, 55, 50, 66, 61, 78, 91],
+    },
+    {
+      number: '02',
+      kicker: t('landing_step2_kicker'),
+      title: t('landing_step2_title'),
+      description: t('landing_step2_desc'),
+      icon: Users,
+      metric: `4 ${t('landing_aud_farmers').toLowerCase()}`,
+      metricLabel: t('landing_step2_label'),
+      clusterTitle: t('landing_step2_cluster_title'),
+      farms: ['FB', 'KL', 'AS', 'RM'],
+    },
+    {
+      number: '03',
+      kicker: t('landing_step3_kicker'),
+      title: t('landing_step3_title'),
+      description: t('landing_step3_desc'),
+      icon: Route,
+      metric: '32%',
+      metricLabel: t('landing_step3_label'),
+      routeTitle: t('landing_step3_route_title'),
+      routeStops: ['Ludhiana', 'Khanna', 'Mandi Gobindgarh', 'Delhi NCR'],
+    },
+  ];
 
   useEffect(() => {
     const elements = document.querySelectorAll<HTMLElement>('[data-reveal]');
@@ -103,32 +105,32 @@ export const Landing: React.FC = () => {
           <div className="story-hero-copy">
             <div className="hero-kicker hero-enter hero-enter-one">
               <span className="kicker-pulse" />
-              India’s intelligent farm-to-market bridge
+              {t('landing_kicker')}
             </div>
 
             <h1 className="story-hero-title hero-enter hero-enter-two">
-              From scattered harvests to <span>one intelligent supply chain.</span>
+              {t('landing_title_1')} <span>{t('landing_title_2')}</span>
             </h1>
 
             <p className="story-hero-description hero-enter hero-enter-three">
-              Predict local demand, unite nearby farms, and deliver directly to serious buyers—while produce is still at its freshest.
+              {t('landing_desc')}
             </p>
 
             <div className="story-hero-actions hero-enter hero-enter-four">
               <Link className="landing-primary-btn" to="/marketplace">
-                Explore live marketplace
+                {t('landing_cta_marketplace')}
                 <ArrowRight size={18} />
               </Link>
               <Link className="landing-ghost-btn" to="/demo">
                 <Sparkles size={17} />
-                Watch the system work
+                {t('landing_cta_demo')}
               </Link>
             </div>
 
             <div className="hero-proof hero-enter hero-enter-five">
-              <span><Check size={14} /> Direct farmer supply</span>
-              <span><Check size={14} /> Zero platform markup</span>
-              <span><Check size={14} /> Live route visibility</span>
+              <span><Check size={14} /> {t('landing_proof_direct')}</span>
+              <span><Check size={14} /> {t('landing_proof_markup')}</span>
+              <span><Check size={14} /> {t('landing_proof_route')}</span>
             </div>
           </div>
 
@@ -140,44 +142,44 @@ export const Landing: React.FC = () => {
             <div className="network-core">
               <div className="network-core-icon"><BrainCircuit size={31} /></div>
               <small>FASALBRIDGE AI</small>
-              <strong>Live match</strong>
-              <span><i /> 12 signals aligned</span>
+              <strong>{t('landing_net_live_match')}</strong>
+              <span><i /> {t('landing_net_signals')}</span>
             </div>
 
             <div className="network-node node-farmer">
               <span className="node-icon"><Sprout size={18} /></span>
-              <div><small>SUPPLY</small><strong>4 nearby farms</strong></div>
+              <div><small>{t('landing_net_supply')}</small><strong>{t('landing_net_farms')}</strong></div>
             </div>
             <div className="network-node node-buyer">
               <span className="node-icon"><ShoppingBasket size={18} /></span>
-              <div><small>DEMAND</small><strong>2 verified buyers</strong></div>
+              <div><small>{t('landing_net_demand')}</small><strong>{t('landing_net_buyers')}</strong></div>
             </div>
             <div className="network-node node-route">
               <span className="node-icon"><Truck size={18} /></span>
-              <div><small>ROUTE</small><strong>86 km pooled</strong></div>
+              <div><small>{t('landing_net_route')}</small><strong>{t('landing_net_pooled')}</strong></div>
             </div>
 
             <div className="floating-signal signal-one">
-              <TrendingUp size={14} /> Demand +18.4%
+              <TrendingUp size={14} /> {t('landing_signal_demand')}
             </div>
             <div className="floating-signal signal-two">
-              <Leaf size={14} /> Freshness protected
+              <Leaf size={14} /> {t('landing_signal_fresh')}
             </div>
 
             <div className="network-status-card">
               <div>
                 <span className="status-dot" />
-                Next dispatch
+                {t('landing_status_dispatch')}
               </div>
-              <strong>Tomatoes · Grade A</strong>
-              <span>2,480 kg ready for pickup</span>
+              <strong>{t('landing_status_crop')}</strong>
+              <span>{t('landing_status_ready')}</span>
               <div className="status-progress"><i /></div>
             </div>
           </div>
         </div>
 
         <a className="hero-scroll-cue" href="#journey" aria-label="Scroll to see how FasalBridge works">
-          <span>Follow the harvest</span>
+          <span>{t('landing_scroll_cue')}</span>
           <ArrowDown size={16} />
         </a>
       </section>
@@ -185,11 +187,11 @@ export const Landing: React.FC = () => {
       <section className="story-intro" id="journey">
         <div className="landing-shell story-intro-grid">
           <div data-reveal>
-            <span className="section-kicker">ONE HARVEST. ONE CONNECTED JOURNEY.</span>
-            <h2>Good produce should never lose value between the field and the buyer.</h2>
+            <span className="section-kicker">{t('landing_story_kicker')}</span>
+            <h2>{t('landing_story_title')}</h2>
           </div>
           <p data-reveal>
-            Today, fragmented demand, small lots, and disconnected transport turn good harvests into waste. FasalBridge connects every decision in one continuous flow.
+            {t('landing_story_desc')}
           </p>
         </div>
       </section>
@@ -213,8 +215,8 @@ export const Landing: React.FC = () => {
                   {step.bars && (
                     <div className="signal-chart-card">
                       <div className="visual-card-head">
-                        <span>7-day demand signal</span>
-                        <span className="live-pill"><i /> LIVE</span>
+                        <span>{step.chartTitle}</span>
+                        <span className="live-pill"><i /> {t('landing_live_pill')}</span>
                       </div>
                       <div className="mini-chart" aria-hidden="true">
                         {step.bars.map((height, barIndex) => (
@@ -227,7 +229,7 @@ export const Landing: React.FC = () => {
 
                   {step.farms && (
                     <div className="pool-card">
-                      <div className="visual-card-head"><span>Matched supply cluster</span><MapPin size={16} /></div>
+                      <div className="visual-card-head"><span>{step.clusterTitle}</span><MapPin size={16} /></div>
                       <div className="farm-cluster" aria-hidden="true">
                         {step.farms.map((farm, farmIndex) => <i key={farm} style={{ '--farm-index': farmIndex } as React.CSSProperties}>{farm}</i>)}
                         <span><BrainCircuit size={23} /></span>
@@ -238,7 +240,7 @@ export const Landing: React.FC = () => {
 
                   {step.routeStops && (
                     <div className="route-card">
-                      <div className="visual-card-head"><span>Optimized pickup route</span><Route size={16} /></div>
+                      <div className="visual-card-head"><span>{step.routeTitle}</span><Route size={16} /></div>
                       <div className="route-list">
                         {step.routeStops.map((stop, stopIndex) => (
                           <div key={stop} className={stopIndex === step.routeStops!.length - 1 ? 'route-destination' : ''}>
@@ -262,22 +264,22 @@ export const Landing: React.FC = () => {
         <div className="impact-glow" aria-hidden="true" />
         <div className="landing-shell">
           <div className="impact-heading" data-reveal>
-            <span className="section-kicker light">THE BRIDGE CREATES VALUE AT EVERY STEP</span>
-            <h2>Better margins. Fresher food. Fewer wasted miles.</h2>
-            <p>One connected system gives every participant more confidence—from planting decisions to final delivery.</p>
+            <span className="section-kicker light">{t('landing_impact_kicker')}</span>
+            <h2>{t('landing_impact_title')}</h2>
+            <p>{t('landing_impact_desc')}</p>
           </div>
 
           <div className="impact-grid" data-reveal>
-            <div className="impact-stat"><strong>94<span>%</span></strong><p>forecast accuracy</p></div>
-            <div className="impact-stat"><strong>32<span>%</span></strong><p>lower transit cost</p></div>
-            <div className="impact-stat"><strong>35<span>%</span></strong><p>fewer food miles</p></div>
-            <div className="impact-stat"><strong>0<span>%</span></strong><p>platform markup</p></div>
+            <div className="impact-stat"><strong>94<span>%</span></strong><p>{t('landing_stat_acc')}</p></div>
+            <div className="impact-stat"><strong>32<span>%</span></strong><p>{t('landing_stat_transit')}</p></div>
+            <div className="impact-stat"><strong>35<span>%</span></strong><p>{t('landing_stat_miles')}</p></div>
+            <div className="impact-stat"><strong>0<span>%</span></strong><p>{t('landing_stat_markup_label')}</p></div>
           </div>
 
           <div className="impact-audiences" data-reveal>
-            <div><Sprout size={20} /><span><strong>Farmers</strong> plan with real demand</span></div>
-            <div><ShoppingBasket size={20} /><span><strong>Buyers</strong> source with confidence</span></div>
-            <div><Truck size={20} /><span><strong>Transporters</strong> move fuller loads</span></div>
+            <div><Sprout size={20} /><span><strong>{t('landing_aud_farmers')}</strong> {t('landing_aud_farmers_sub')}</span></div>
+            <div><ShoppingBasket size={20} /><span><strong>{t('landing_aud_buyers')}</strong> {t('landing_aud_buyers_sub')}</span></div>
+            <div><Truck size={20} /><span><strong>{t('landing_aud_trucks')}</strong> {t('landing_aud_trucks_sub')}</span></div>
           </div>
         </div>
       </section>
@@ -286,12 +288,12 @@ export const Landing: React.FC = () => {
         <div className="landing-cta-card" data-reveal>
           <div className="cta-leaf cta-leaf-one" aria-hidden="true"><Leaf size={120} /></div>
           <div className="cta-leaf cta-leaf-two" aria-hidden="true"><Leaf size={90} /></div>
-          <span className="section-kicker">YOUR NEXT HARVEST CAN MOVE SMARTER</span>
-          <h2>Ready to cross the bridge?</h2>
-          <p>Step into the live FasalBridge network and see supply, demand, and delivery come together.</p>
+          <span className="section-kicker">{t('landing_cta_kicker')}</span>
+          <h2>{t('landing_cta_title')}</h2>
+          <p>{t('landing_cta_sub')}</p>
           <div className="landing-cta-actions">
-            <Link className="landing-primary-btn" to="/demo">Run the live demo <Zap size={18} /></Link>
-            <Link className="landing-text-link" to="/farmer">Open Farmer Hub <ArrowRight size={17} /></Link>
+            <Link className="landing-primary-btn" to="/demo">{t('landing_cta_demo_btn')} <Zap size={18} /></Link>
+            <Link className="landing-text-link" to="/farmer">{t('landing_cta_farmer_btn')} <ArrowRight size={17} /></Link>
           </div>
         </div>
       </section>

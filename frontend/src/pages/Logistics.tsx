@@ -5,17 +5,16 @@ import {
   MapPin,
   CheckCircle2,
   Navigation,
-  Clock,
-  Package,
-  Layers,
   Sparkles,
 } from 'lucide-react';
 import { PageHead } from '../components/PageHead';
 import { RealMap, MapMarkerItem } from '../components/RealMap';
 import { apiGet, apiPost } from '../api/client';
 import { RouteData } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Logistics: React.FC = () => {
+  const { t, translateCrop, translateLocation } = useLanguage();
   const [routes, setRoutes] = useState<RouteData[]>([]);
   const [selectedRouteIndex, setSelectedRouteIndex] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
@@ -86,11 +85,11 @@ export const Logistics: React.FC = () => {
   const getNextStatus = (current: string) => {
     switch (current) {
       case 'PLANNED':
-        return { label: 'Start Pickup Route', status: 'PICKUP' };
+        return { label: t('log_btn_pickup'), status: 'PICKUP' };
       case 'PICKUP':
-        return { label: 'Mark in Transit to Hub', status: 'IN TRANSIT' };
+        return { label: t('log_btn_transit'), status: 'IN TRANSIT' };
       case 'IN TRANSIT':
-        return { label: 'Confirm Final Delivery', status: 'DELIVERED' };
+        return { label: t('log_btn_deliver'), status: 'DELIVERED' };
       default:
         return null;
     }
@@ -101,9 +100,9 @@ export const Logistics: React.FC = () => {
   return (
     <div className="logistics-page">
       <PageHead
-        tag="SMART POOLED LOGISTICS DISPATCH"
-        title="Deliver more with every green route."
-        text="Nearby smallholder farm lots are dynamically aggregated into an optimal single-truck pickup sequence."
+        tag={t('log_page_tag')}
+        title={t('log_page_title')}
+        text={t('log_page_desc')}
         action={
           <button
             type="button"
@@ -111,7 +110,7 @@ export const Logistics: React.FC = () => {
             onClick={handleOptimize}
           >
             <Sparkles size={16} />
-            <span>Optimize Routing Sequence</span>
+            <span>{t('log_optimize_btn')}</span>
           </button>
         }
       />
@@ -125,16 +124,16 @@ export const Logistics: React.FC = () => {
         )}
 
         {loading ? (
-          <div className="loading-placeholder">Loading real GIS logistics data…</div>
+          <div className="loading-placeholder">{t('loading')}</div>
         ) : !activeRoute ? (
           <div className="empty-placeholder panel">
             <Truck size={42} className="empty-icon" />
-            <h3>No active logistics routes</h3>
+            <h3>{t('log_empty_title')}</h3>
             <p>
-              Place an order from the marketplace or execute the demo flow to generate a pooled route.
+              {t('log_empty_desc')}
             </p>
             <Link to="/marketplace" className="btn btn-primary">
-              Visit Marketplace
+              {t('log_empty_cta')}
             </Link>
           </div>
         ) : (
@@ -144,7 +143,7 @@ export const Logistics: React.FC = () => {
               <div className="map-header-row">
                 <div className="map-badge">
                   <Navigation size={15} />
-                  <span>INTERACTIVE ROUTE TELEMETRY</span>
+                  <span>{t('log_telemetry_badge')}</span>
                 </div>
                 <span className={`status-badge status-${activeRoute.status.toLowerCase().replace(' ', '-')}`}>
                   {activeRoute.status}
@@ -163,15 +162,15 @@ export const Logistics: React.FC = () => {
               <div className="map-legend">
                 <div className="legend-item">
                   <span className="legend-dot dot-green"></span>
-                  <span>Farm Pickup Stops ({activeRoute.farms.length})</span>
+                  <span>{t('log_legend_stops')} ({activeRoute.farms.length})</span>
                 </div>
                 <div className="legend-item">
                   <span className="legend-dot dot-blue"></span>
-                  <span>Buyer Fulfillment Hub</span>
+                  <span>{t('log_legend_hub')}</span>
                 </div>
                 <div className="legend-item">
                   <span className="legend-line dot-dashed"></span>
-                  <span>Nearest-Neighbor Pooled Route</span>
+                  <span>{t('log_legend_route')}</span>
                 </div>
               </div>
             </div>
@@ -179,25 +178,25 @@ export const Logistics: React.FC = () => {
             {/* Route Stop Sequence Card */}
             <div className="route-detail-panel panel">
               <div className="route-detail-header">
-                <span className="panel-tag">POOLED ROUTE #{activeRoute.code}</span>
-                <h2 className="route-crop-title">{activeRoute.crop} Bulk Batch</h2>
+                <span className="panel-tag">{t('log_route_tag')}{activeRoute.code}</span>
+                <h2 className="route-crop-title">{translateCrop(activeRoute.crop)} {t('log_batch_title')}</h2>
                 <p className="route-sub">
-                  Delivering to <b>{activeRoute.buyer}</b>
+                  {t('log_route_delivering_to')} <b>{activeRoute.buyer}</b>
                 </p>
               </div>
 
               {/* Waypoint Stops */}
               <div className="route-stops-list">
-                <h4>Stop Sequence ({activeRoute.stops} Stops):</h4>
+                <h4>{t('log_stops_header')} ({activeRoute.stops}):</h4>
                 {activeRoute.farms.map((farm, idx) => (
                   <div className="stop-item" key={idx}>
                     <div className="stop-badge stop-pickup">
                       <span>{idx + 1}</span>
                     </div>
                     <div className="stop-info">
-                      <strong>Pickup: {farm.name}</strong>
+                      <strong>{t('log_stop_pickup')}: {farm.name}</strong>
                       <span className="stop-loc">
-                        📍 {farm.location} · {farm.quantity.toLocaleString()} kg
+                        📍 {translateLocation(farm.location)} · {farm.quantity.toLocaleString()} {t('unit_kg')}
                       </span>
                     </div>
                   </div>
@@ -208,8 +207,8 @@ export const Logistics: React.FC = () => {
                     <MapPin size={14} />
                   </div>
                   <div className="stop-info">
-                    <strong>Final Delivery: {activeRoute.buyer}</strong>
-                    <span className="stop-loc">Consolidated batch unloading</span>
+                    <strong>{t('log_stop_delivery')}: {activeRoute.buyer}</strong>
+                    <span className="stop-loc">{t('log_batch_unloading')}</span>
                   </div>
                 </div>
               </div>
@@ -219,19 +218,19 @@ export const Logistics: React.FC = () => {
               {/* Route Metrics */}
               <div className="route-facts-grid">
                 <div className="fact-box">
-                  <span className="fact-label">Total Distance</span>
+                  <span className="fact-label">{t('log_fact_distance')}</span>
                   <strong className="fact-val">{activeRoute.distance} km</strong>
                 </div>
                 <div className="fact-box">
-                  <span className="fact-label">Aggregated Load</span>
-                  <strong className="fact-val">{activeRoute.load.toLocaleString()} kg</strong>
+                  <span className="fact-label">{t('log_fact_load')}</span>
+                  <strong className="fact-val">{activeRoute.load.toLocaleString()} {t('unit_kg')}</strong>
                 </div>
                 <div className="fact-box">
-                  <span className="fact-label">Total Stops</span>
+                  <span className="fact-label">{t('log_fact_stops')}</span>
                   <strong className="fact-val">{activeRoute.stops}</strong>
                 </div>
                 <div className="fact-box">
-                  <span className="fact-label">Est. Time</span>
+                  <span className="fact-label">{t('log_fact_time')}</span>
                   <strong className="fact-val">1h 45m</strong>
                 </div>
               </div>
@@ -245,12 +244,12 @@ export const Logistics: React.FC = () => {
                   disabled={updating}
                 >
                   <Truck size={18} />
-                  <span>{updating ? 'Updating Status…' : nextAction.label}</span>
+                  <span>{updating ? t('log_updating') : nextAction.label}</span>
                 </button>
               ) : (
                 <div className="delivered-confirmation">
                   <CheckCircle2 size={20} />
-                  <span>Route Completed & Produce Delivered</span>
+                  <span>{t('log_status_delivered')}</span>
                 </div>
               )}
             </div>

@@ -66,7 +66,7 @@ export const FieldCard: React.FC<FieldCardProps> = ({
       <div className="field-quantity-box">
         <div className="qty-row">
           <span className="qty-label">{t('available_supply')}:</span>
-          <strong className="qty-val">{item.available_quantity.toLocaleString()} kg</strong>
+          <strong className="qty-val">{item.available_quantity.toLocaleString()} {t('unit_kg')}</strong>
         </div>
         <div className="qty-bar-bg">
           <div
@@ -81,7 +81,7 @@ export const FieldCard: React.FC<FieldCardProps> = ({
       <div className="field-card-footer">
         <div className="field-pricing">
           <span className="price-val">{formatRupee(item.price)}</span>
-          <span className="price-unit">/kg</span>
+          <span className="price-unit">{t('unit_per_kg')}</span>
         </div>
 
         {onLocate && (
@@ -93,7 +93,7 @@ export const FieldCard: React.FC<FieldCardProps> = ({
               e.stopPropagation();
               onLocate(item);
             }}
-            title="Focus this farm on map"
+            title={t('locate_btn')}
           >
             <Navigation size={14} />
             <span>{isSelected ? t('focused_btn') : t('locate_btn')}</span>

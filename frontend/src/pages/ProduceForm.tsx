@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import { PageHead } from '../components/PageHead';
 import { apiPost, CROPS, LOCATIONS } from '../api/client';
+import { useLanguage } from '../context/LanguageContext';
 
 export const ProduceForm: React.FC = () => {
   const navigate = useNavigate();
+  const { t, translateCrop, translateLocation } = useLanguage();
 
   const [form, setForm] = useState({
     farmer_id: 1,
@@ -27,7 +29,7 @@ export const ProduceForm: React.FC = () => {
 
     try {
       await apiPost('/produce', form);
-      setStatusMsg({ type: 'success', text: 'Listing published successfully! Redirecting to marketplace…' });
+      setStatusMsg({ type: 'success', text: t('form_success_msg') });
       setTimeout(() => navigate('/marketplace'), 1200);
     } catch (err: any) {
       setStatusMsg({ type: 'error', text: err.message || 'Failed to publish listing.' });
@@ -39,9 +41,9 @@ export const ProduceForm: React.FC = () => {
   return (
     <div className="form-page">
       <PageHead
-        tag="FARMER SUPPLY ONBOARDING"
-        title="List your fresh produce lot."
-        text="Define harvest specifications and transparent pricing so nearby buyers can discover and aggregate your supply."
+        tag={t('form_page_tag')}
+        title={t('form_page_title')}
+        text={t('form_page_desc')}
       />
 
       <main className="form-page-main">
@@ -49,7 +51,7 @@ export const ProduceForm: React.FC = () => {
           <form className="produce-form panel" onSubmit={handleSubmit}>
             <div className="form-field-group">
               <label htmlFor="crop-select">
-                <span>Crop Type</span>
+                <span>{t('form_crop_label')}</span>
                 <select
                   id="crop-select"
                   value={form.crop}
@@ -57,13 +59,13 @@ export const ProduceForm: React.FC = () => {
                   required
                 >
                   {CROPS.map((c) => (
-                    <option key={c} value={c}>{c}</option>
+                    <option key={c} value={c}>{translateCrop(c)}</option>
                   ))}
                 </select>
               </label>
 
               <label htmlFor="quantity-input">
-                <span>Total Quantity (kg)</span>
+                <span>{t('form_qty_label')}</span>
                 <input
                   id="quantity-input"
                   type="number"
@@ -78,7 +80,7 @@ export const ProduceForm: React.FC = () => {
 
             <div className="form-field-group">
               <label htmlFor="price-input">
-                <span>Price per kg (₹ INR)</span>
+                <span>{t('form_price_label')}</span>
                 <input
                   id="price-input"
                   type="number"
@@ -91,7 +93,7 @@ export const ProduceForm: React.FC = () => {
               </label>
 
               <label htmlFor="location-select">
-                <span>Farm District / Hub</span>
+                <span>{t('form_location_label')}</span>
                 <select
                   id="location-select"
                   value={form.location}
@@ -99,7 +101,7 @@ export const ProduceForm: React.FC = () => {
                   required
                 >
                   {LOCATIONS.map((loc) => (
-                    <option key={loc} value={loc}>{loc}</option>
+                    <option key={loc} value={loc}>{translateLocation(loc)}</option>
                   ))}
                 </select>
               </label>
@@ -107,20 +109,20 @@ export const ProduceForm: React.FC = () => {
 
             <div className="form-field-group">
               <label htmlFor="grade-select">
-                <span>Quality Grade</span>
+                <span>{t('form_grade_label')}</span>
                 <select
                   id="grade-select"
                   value={form.grade}
                   onChange={(e) => setForm({ ...form, grade: e.target.value })}
                   required
                 >
-                  <option value="Grade A">Grade A (Export / Premium Retail)</option>
-                  <option value="Grade B">Grade B (Standard Wholesale / Processing)</option>
+                  <option value="Grade A">{t('form_grade_a')}</option>
+                  <option value="Grade B">{t('form_grade_b')}</option>
                 </select>
               </label>
 
               <label htmlFor="harvest-date-input">
-                <span>Expected Harvest Date</span>
+                <span>{t('form_date_label')}</span>
                 <input
                   id="harvest-date-input"
                   type="date"
@@ -139,16 +141,16 @@ export const ProduceForm: React.FC = () => {
             )}
 
             <button type="submit" className="btn btn-primary form-submit-btn" disabled={submitting}>
-              <span>{submitting ? 'Publishing…' : 'Publish Farm Listing'}</span>
+              <span>{submitting ? t('form_submitting_btn') : t('form_submit_btn')}</span>
               <ArrowRight size={18} />
             </button>
           </form>
 
           {/* Live Preview Panel */}
           <aside className="preview-panel panel">
-            <span className="panel-tag">LIVE LISTING PREVIEW</span>
-            <h3>Field Summary Card</h3>
-            <p className="preview-sub">How buyers will discover your lot in the marketplace:</p>
+            <span className="panel-tag">{t('form_preview_tag')}</span>
+            <h3>{t('form_preview_title')}</h3>
+            <p className="preview-sub">{t('form_preview_sub')}</p>
 
             <div className="preview-card-box">
               <div className="preview-card-top">
@@ -156,25 +158,25 @@ export const ProduceForm: React.FC = () => {
                   {form.crop === 'Tomato' ? '🍅' : form.crop === 'Onion' ? '🧅' : form.crop === 'Potato' ? '🥔' : '🌾'}
                 </span>
                 <div>
-                  <h4>{form.crop}</h4>
-                  <span className="preview-farmer">Harpreet Singh · {form.location}</span>
+                  <h4>{translateCrop(form.crop)}</h4>
+                  <span className="preview-farmer">Harpreet Singh · {translateLocation(form.location)}</span>
                 </div>
                 <span className="grade-chip grade-a">{form.grade}</span>
               </div>
 
               <div className="preview-stats-row">
                 <div>
-                  <small>Available Volume</small>
-                  <strong>{form.quantity.toLocaleString()} kg</strong>
+                  <small>{t('form_preview_volume')}</small>
+                  <strong>{form.quantity.toLocaleString()} {t('unit_kg')}</strong>
                 </div>
                 <div>
-                  <small>Direct Farmer Price</small>
-                  <strong>₹{form.price}/kg</strong>
+                  <small>{t('form_preview_price')}</small>
+                  <strong>₹{form.price}{t('unit_per_kg')}</strong>
                 </div>
               </div>
 
               <div className="preview-footer-note">
-                <span>📍 Verified coordinates mapped automatically</span>
+                <span>{t('form_preview_footer')}</span>
               </div>
             </div>
           </aside>

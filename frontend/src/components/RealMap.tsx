@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
+import { useLanguage } from '../context/LanguageContext';
 
 export interface MapMarkerItem {
   id: string | number;
@@ -31,6 +32,7 @@ export const RealMap: React.FC<RealMapProps> = ({
   onMarkerClick,
   height = '420px',
 }) => {
+  const { t, translateCrop, translateLocation } = useLanguage();
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const layerGroupRef = useRef<L.LayerGroup | null>(null);
@@ -100,12 +102,12 @@ export const RealMap: React.FC<RealMapProps> = ({
 
       const popupContent = `
         <div class="map-popup-card">
-          <div class="popup-tag">FARM LOT #${idx + 1}</div>
+          <div class="popup-tag">${t('map_popup_lot')}${idx + 1}</div>
           <h4>${m.name}</h4>
-          <p class="popup-loc">📍 ${m.locationName || 'Punjab'}</p>
-          ${m.crop ? `<div class="popup-crop"><strong>${m.crop}</strong> ${m.grade ? `<span class="chip-sm">${m.grade}</span>` : ''}</div>` : ''}
-          ${m.quantity ? `<div class="popup-stat"><span>Quantity:</span> <b>${m.quantity.toLocaleString()} kg</b></div>` : ''}
-          ${m.price ? `<div class="popup-stat"><span>Price:</span> <b>₹${m.price}/kg</b></div>` : ''}
+          <p class="popup-loc">📍 ${m.locationName ? translateLocation(m.locationName) : t('map_popup_punjab')}</p>
+          ${m.crop ? `<div class="popup-crop"><strong>${translateCrop(m.crop)}</strong> ${m.grade ? `<span class="chip-sm">${m.grade}</span>` : ''}</div>` : ''}
+          ${m.quantity ? `<div class="popup-stat"><span>${t('map_popup_qty')}:</span> <b>${m.quantity.toLocaleString()} ${t('unit_kg')}</b></div>` : ''}
+          ${m.price ? `<div class="popup-stat"><span>${t('map_popup_price')}:</span> <b>₹${m.price}${t('unit_per_kg')}</b></div>` : ''}
           <div class="popup-coords">${m.lat.toFixed(4)}°N, ${m.lng.toFixed(4)}°E</div>
         </div>
       `;
@@ -138,9 +140,9 @@ export const RealMap: React.FC<RealMapProps> = ({
 
       buyerMarker.bindPopup(`
         <div class="map-popup-card">
-          <div class="popup-tag buyer-tag">DELIVERY DESTINATION</div>
+          <div class="popup-tag buyer-tag">${t('map_popup_hub')}</div>
           <h4>${destination.name}</h4>
-          <p class="popup-loc">📍 Central Fulfillment Hub</p>
+          <p class="popup-loc">📍 ${t('map_popup_central_hub')}</p>
           <div class="popup-coords">${destination.lat.toFixed(4)}°N, ${destination.lng.toFixed(4)}°E</div>
         </div>
       `);

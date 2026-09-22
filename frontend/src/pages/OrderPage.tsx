@@ -160,15 +160,15 @@ export const OrderPage: React.FC = () => {
                   {orderResult.code}
                 </h2>
                 <p className="result-summary">
-                  {orderResult.quantity.toLocaleString()} kg {translateCrop(orderResult.crop)} ·{' '}
-                  <strong>{formatRupee(totalPayable)}</strong> (All-Inclusive Landed)
+                  {orderResult.quantity.toLocaleString()} {t('unit_kg')} {translateCrop(orderResult.crop)} ·{' '}
+                  <strong>{formatRupee(totalPayable)}</strong>
                 </p>
               </div>
             </div>
 
             {/* Pooled Farm Allocations */}
             <div className="allocations-list">
-              <h4>Pooled Farm Contributors ({orderResult.allocations.length}):</h4>
+              <h4>{orderResult.allocations.length} {t('order_farmers_pooled')}:</h4>
               {orderResult.allocations.map((alloc, idx) => (
                 <div className="allocation-item" key={idx}>
                   <div className="alloc-farmer-info">
@@ -177,8 +177,8 @@ export const OrderPage: React.FC = () => {
                     <span className="alloc-loc">📍 {translateLocation(alloc.location)}</span>
                   </div>
                   <div className="alloc-numbers">
-                    <span>{alloc.quantity.toLocaleString()} kg</span>
-                    <span>@ {formatRupee(alloc.price)}/kg</span>
+                    <span>{alloc.quantity.toLocaleString()} {t('unit_kg')}</span>
+                    <span>@ {formatRupee(alloc.price)}{t('unit_per_kg')}</span>
                     <b>{formatRupee(alloc.quantity * alloc.price)}</b>
                   </div>
                 </div>
@@ -206,9 +206,9 @@ export const OrderPage: React.FC = () => {
                 <div className="cost-table-row">
                   <div className="col-item">
                     <strong>{t('order_produce_farmer_subtotal')}</strong>
-                    <small className="col-subtext">Direct payment across {orderResult.allocations.length} farm lots</small>
+                    <small className="col-subtext">{t('order_produce_subtext')}</small>
                   </div>
-                  <div className="col-rate">₹{avgFarmerRate.toFixed(2)}/kg</div>
+                  <div className="col-rate">₹{avgFarmerRate.toFixed(2)}{t('unit_per_kg')}</div>
                   <div className="col-amount">{formatRupee(produceTotal)}</div>
                 </div>
 
@@ -216,9 +216,9 @@ export const OrderPage: React.FC = () => {
                 <div className="cost-table-row">
                   <div className="col-item">
                     <strong>{t('order_logistics_fee')}</strong>
-                    <small className="col-subtext">Consolidated farm-to-hub nearest-neighbor transport</small>
+                    <small className="col-subtext">{t('order_logistics_subtext')}</small>
                   </div>
-                  <div className="col-rate">₹{logisticsRate.toFixed(2)}/kg</div>
+                  <div className="col-rate">₹{logisticsRate.toFixed(2)}{t('unit_per_kg')}</div>
                   <div className="col-amount">{formatRupee(logisticsTotal)}</div>
                 </div>
 
@@ -228,17 +228,17 @@ export const OrderPage: React.FC = () => {
                     <div className="item-with-badge">
                       <strong>{t('order_platform_fee')}</strong>
                       {isCapped ? (
-                        <span className="cap-applied-badge">Max ₹200 Cap Applied</span>
+                        <span className="cap-applied-badge">{t('order_cap_applied_badge')}</span>
                       ) : (
-                        <span className="rate-applied-badge">0.3% Applied</span>
+                        <span className="rate-applied-badge">{t('order_rate_applied_badge')}</span>
                       )}
                     </div>
                     <small className="col-subtext">
                       0.3% of ₹{produceTotal.toLocaleString('en-IN')} = ₹{rawPlatformFee.toFixed(2)}
-                      {isCapped ? ' → strictly capped at ₹200.00' : ''}
+                      {isCapped ? ' → max ₹200.00' : ''}
                     </small>
                   </div>
-                  <div className="col-rate">₹{effectivePlatformRate.toFixed(3)}/kg</div>
+                  <div className="col-rate">₹{effectivePlatformRate.toFixed(3)}{t('unit_per_kg')}</div>
                   <div className="col-amount fee-highlight">₹{platformFee.toFixed(2)}</div>
                 </div>
 
